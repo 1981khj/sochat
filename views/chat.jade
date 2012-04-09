@@ -1,0 +1,57 @@
+!!!5
+html
+    head
+        title= 'gogochat'
+        meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, target-densitydpi=medium-dpi') 
+        link(rel='stylesheet', href='/css/chat.css')
+        link(rel='stylesheet', href='/css/jquery.contextMenu.css')
+        link(rel='stylesheet', href='/css/jquery.notice.css')
+        link(rel='icon', href='/img/favicon.ico')
+        script(type='text/javascript', src='http://code.jquery.com/jquery-1.7.min.js')
+        script(type='text/javascript', src='/js/jquery.blockUI.js')
+        script(type='text/javascript', src='/js/jquery.contextMenu.js')
+        script(type='text/javascript', src='/js/jquery.notice.js')
+        script(type='text/javascript', src='/js/tinycon.js')
+        script(type='text/javascript', src='/js/socket.io.js')
+        script(type='text/javascript', src='/js/jquery.jswipe.js')
+    body
+        #chat_wrap
+            #header
+                h1
+                    span.blind UI Talk
+                span.nick_name 
+                ul.chat_tabs
+                    li#firsttab.on(style="display:none")
+                        a(href="#all")전체대화                    
+            #contents
+                #nickList
+                    h2 전체접속자
+                    ul
+                .messageLog#all
+                    h2.blind message log
+                    ul
+                #messageSend
+                    form(action="#")
+                        fieldset
+                            legend 메시지 보내기
+                            .ipt_wrap
+                                input(id="msgArea", type="text")
+                                button#send 보내기
+            #join(style="display:block")
+                .join_inwrap
+                form#joinform
+                    fieldset
+                        legend 접속하기
+                        p 대화명을 입력하세요!
+                        input(id="nick_ipt", type="text", placeholder="NickName")
+                        button#enter 들어가기
+
+            ul#chatMenu.contextMenu
+                li.invite
+                    a(href="#invite") 대화하기
+            .btn_toggle(style="display:none")
+                a.off(href="#", style="display:none")▼
+                a.on(href="#", style="display:none")▲
+
+                
+            script(type='text/javascript', src='/js/webchat.js')

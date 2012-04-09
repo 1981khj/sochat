@@ -1,0 +1,11 @@
+{
+  "name": "p9chat",                                              
+  "version": "0.0.1",
+  "dependencies":
+  {
+    "socket.io": ">= 0.8.7",
+    "express": ">= 2.5",
+    "jade": ">=0.16.2",
+    "data": ">=0.3.9"
+  }
+}
