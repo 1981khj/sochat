@@ -1,11 +1,14 @@
 (function($) {
+    $(document).bind("mobileinit", function(){
+        $.mobile.page.prototype.options.addBackBtn= true;
+    });
     //var socket = io.connect('/');
     
     //for develop
     var socket = io.connect('http://sochat.hjkim.c9.io/');
     
     //for deploy
-	//var socket = io.connect('http://p9chat.herokuapp.com/');
+    //var socket = io.connect('http://p9chat.herokuapp.com/');
     var joined = false;
 
     // 서비스에 접속한 경우 자신의 대화명을 좌측 상단 아이콘 옆에 출력
@@ -142,6 +145,11 @@
         console.log("socket:::nickis");
         
 	});
+    
+    
+    $("#enter").click(function(){        
+        alert("ab");
+    });
         
     // 기본 서브밋 속성을 죽이기 
     $("#joinform").submit(function(){        
@@ -225,7 +233,7 @@
         }
     });
     
-    $("#nickList ul li").live("click",function(){        
+    /*$("#nickList ul li").live("click",function(){        
         if($(this).hasClass('me')){
             return false;
         }
@@ -233,7 +241,7 @@
         socket.emit('makePrivateRoom',$.trim($(this).text()));
         //자신의 방이 활성화 되는 것으로 사용 가능..
         return false;        
-    });
+    });*/
     
     $("div.btn_toggle").on("click",function(e){
         console.log(e);

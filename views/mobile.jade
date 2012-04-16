@@ -1,0 +1,61 @@
+!!!5
+html
+    head
+        title= 'gogochat'
+        meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, target-densitydpi=medium-dpi') 
+        link(rel='stylesheet', href='http://code.jquery.com/mobile/1.1.0-rc.2/jquery.mobile-1.1.0-rc.2.min.css')
+        script(type='text/javascript', src='http://code.jquery.com/jquery-1.7.1.min.js')
+        script(type='text/javascript', src='http://code.jquery.com/mobile/1.1.0-rc.2/jquery.mobile-1.1.0-rc.2.min.js')
+        script(type='text/javascript', src='/socket.io/socket.io.js')
+        
+    body
+        div#login(data-role='page')
+            div(data-theme='b', data-role='header')
+                h3 LOGIN
+            div(data-role='content')
+                fieldset(data-role='controlgroup')
+                    label(for='nickname')
+                    input#nickname(type='text', value='', placeholder='대화명을 입력하세요.')
+                    // input#enter(type='button', value='Enter', data-theme='a', data-icon='check')
+                    a(href='#nicklist', data-role="button", data-theme='a', data-icon='check') Enter
+        div#nicklist(data-role='page')
+            div(data-theme='b', data-role='header')
+                h3 대화리스트
+            div(data-role='content')
+                ul(data-role='listview', data-split-icon='gear', data-split-theme='d')
+                    li
+                        a(href='#chat')
+                            img(src='/img/1334196193_Gnome-Stock-Person-48.png')
+                            h3 김형진
+                            p 접속중 
+                        a(href='#status', data-rel='dialog', data-transition='slideup') Change Status
+                    li
+                        a(href='#chat')
+                            img(src='/img/1334196193_Gnome-Stock-Person-48.png')
+                            h3 김기자
+                            p 접속중 
+                        a(href='#status', data-rel='dialog', data-transition='slideup') Change Status
+                    li
+                        a(href='#chat')
+                            img(src='/img/1334196193_Gnome-Stock-Person-48.png')
+                            h3 김형사
+                            p 접속중 
+                        a(href='#status', data-rel='dialog', data-transition='slideup') Change Status
+        div#status(data-role='page')
+            div(data-theme='e', data-role='header')
+                h3 상태리스트 
+            div(data-role='content')
+                ul(data-role='listview', data-split-icon='gear', data-split-theme='d')
+                    li
+                        a(href='#nicklist') 다른 용무 중
+                    li
+                        a(href='#nicklist') 자리비움
+        div#chat(data-role='page')
+            div(data-theme='e', data-role='header')
+                h3 대화방
+            div(data-role='content')                
+                label(for='message')
+                input#message(name='message', value='')
+                input#send(type='button', value='Send', data-theme='a', data-icon='check')
+            div(data-role='footer', data-position='fixed')
+        script(type='text/javascript', src='/js/mobilechat.js')
