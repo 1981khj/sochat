@@ -4,6 +4,8 @@ var port = process.env.PORT;
 var express = require('express');
 var Data = require('data');
 var app = express.createServer();
+var mongo = require("mongoskin");
+var mongoUrl = "mongodb://admin:admin@ds031637.mongolab.com:31637/servicelog?auto_reconnect";
 
 app.configure(function() {
   app.set('views', __dirname + '/views');
@@ -33,8 +35,24 @@ app.configure('production', function(){
 });
 
 //Page Routing
-app.get('/', function(req, res) {
+/*app.get('/', function(req, res) {
     res.render('chat.jade');
+});*/
+
+app.get('/', function(req, res) {
+    var db = mongo.db(mongoUrl);
+    var messageCollection = db.collection("message");
+    messageCollection.find().toArray(function(err, items) {
+        if (err) throw err;
+ 
+        console.log(items);
+        //items = JSON.stringify(items);
+        //res.render('result',{title:'result', items:items});
+        
+        res.render('chat.jade',{items:items});
+        
+	}); 
+    
 });
 
 app.get('/mobile', function(req, res) {
@@ -57,6 +75,7 @@ app.error(function(err, req, res, next){
 /**socket io 처리 영역*/
 var io = require('socket.io').listen(app);
 //var Chat = require('./chat');
+//var DbHandler = require('./db');
 
 var htUserList = new Data.Hash();
 
@@ -177,7 +196,12 @@ io.sockets.on('connection', function(socket) {
         if(data.to=="#all"){
             //퍼블릭 메시지는 오직 전체방에만 뛰워지기 때문에 방은 보내지 않도록 처리
             //io.sockets.emit('publicmessage', {msg: data.msg, from: socket.nickname, toroom: data.to});
+            //DbHandler.saveMessage({from: socket.nickname, msg: data.msg});
+            
             io.sockets.emit('publicmessage', {from: socket.nickname, msg: data.msg});
+            var db = mongo.db(mongoUrl);
+	        var messageCollection = db.collection("message");
+            messageCollection.insert({from: socket.nickname, msg: data.msg});
         }else{
             var sendToId = data.to.substring(1);
             
