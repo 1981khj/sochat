@@ -10,8 +10,7 @@
 
     // 서비스에 접속한 경우 자신의 대화명을 좌측 상단 아이콘 옆에 출력
     socket.on('joinok', function(nick) {
-        joined = true;
-        console.log("socket:::joinok");
+        joined = true;        
 		//$("ul", "#nickList").append("<li>" + nick + "</li>");
         $(".nick_name").text(nick);
         disableLoading();
@@ -22,26 +21,20 @@
 	});
     
     // 닉네임이 존재 할 경우
-    socket.on('nickIsAlreadyExist', function(data) {
-        console.log("socket:::nickIsAlreadyExist");
-        console.log(data);
+    socket.on('nickIsAlreadyExist', function(data) {        
         alert("해당 대화명(" + data + ")은 이미 존재합니다. 다시 입력하세요");
         window.location.reload();
     });
     
     // 서비스에 접속하여 로그인시 대화명 체크 후 정상적으로 넘어온 경우
-    socket.on('enterlog', function(logdata) {
-        console.log("socket:::enterlog");
-		//$("#messageLog>ul").append("<li class='fade_out_end'><strong>" + logdata + "</strong></li>");
+    socket.on('enterlog', function(logdata) {        
         if(joined)
             notificationMsg(logdata+" 입장하였습니다.");
 		//scrollToTop();
 	});
     
     // 서비스를 종료할 경우 혹은 접속이 끊길 경우
-    socket.on('exitlog', function(logdata) {
-        console.log("socket:::exitlog");
-        console.log(logdata);
+    socket.on('exitlog', function(logdata) {    
         if(joined && logdata!=null)
             notificationMsg(logdata+" 퇴장하였습니다.");
 	});
@@ -53,8 +46,6 @@
 
     // 왼쪽에 사용자 리스트를 그려주는 기능
 	socket.on('nicknames', function(data) {
-        console.log("socket:::nicknames");
-        console.log(data);
 		var nicklist = $("ul", "#nickList");
         nicklist.empty();        
         
@@ -73,9 +64,7 @@
 	});
     
     // 전체 방을 활성화 시키지는 않지만 대화는 해당 창에 출력이 되도록 한다.
-    socket.on('publicmessage', function(logdata) {
-        console.log("socket:::publicmessage");
-        console.log(logdata);        
+    socket.on('publicmessage', function(logdata) {        
         var publicRoomMsgArea = $("#all",$("#contents")).find(">ul");
         publicRoomMsgArea.append("<li class='fade_out_end'><strong>" + logdata.from + ":</strong><span>"+logdata.msg+"</span><em>"+getCurrentDate()+"</em></li>");        
     	scrollToTop();
@@ -83,9 +72,7 @@
     
     // 개인적인 메시지를 보낼 경우 대화명 대화방을 쓰도록 한다.
     // 현재 받은 방을 찾고 방이 없으면 만들고 방이 있으면 해당 방을 활성화 시킨후 메시지를 출력
-    socket.on('privatemessage', function(logdata) {
-        console.log("socket:::privatemessage");
-        console.log(logdata);
+    socket.on('privatemessage', function(logdata) {        
         var roomId = "#"+logdata.roomid;
         var sCurrentRoomId = getCurrentRoomId();        
         
@@ -139,7 +126,7 @@
 
     // 무엇때문에 작성하였는지 모름
     socket.on('nickis', function(data) {
-        console.log("socket:::nickis");
+        //console.log("socket:::nickis");
         
 	});
         
@@ -186,7 +173,7 @@
     // 탭내 버튼 태그나 탭클로즈 클래스를 누르면 탭창이 닫힌다.
     $("#header ul.chat_tabs").on({
         click : function(e){            
-            console.log(e);
+            //console.log(e);
             if(e.target.tagName=="A" ||e.target.tagName == "LI"){                
                 $(this).find("li.on").removeClass("on");
                 var target = (e.target.tagName=="A")? $(e.target).parent() : $(e.target) ;                
@@ -235,9 +222,7 @@
         return false;        
     });
     
-    $("div.btn_toggle").on("click",function(e){
-        console.log(e);
-        console.log($(e.target).prop("class"));
+    $("div.btn_toggle").on("click",function(e){        
         if($(e.target).prop("class")=="on"){
             $("#chat_wrap").addClass("toggle_on");
         }else{
@@ -455,5 +440,11 @@
             str += chars[Math.floor(Math.random() * chars.length)];
         }
         return str;
+    }
+    
+    function printlog(msg){
+        if(window.console){
+            console.log(msg);
+        }
     }
 })(jQuery);
