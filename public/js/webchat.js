@@ -2,10 +2,10 @@
     //var socket = io.connect('/');
     
     //for develop
-    var socket = io.connect('http://sochat.hjkim.c9.io/');
+    //var socket = io.connect('http://sochat.hjkim.c9.io/');
     
     //for deploy
-	//var socket = io.connect('http://p9chat.herokuapp.com/');
+	var socket = io.connect('http://lovechat.herokuapp.com/');
     var joined = false;
 
     // 서비스에 접속한 경우 자신의 대화명을 좌측 상단 아이콘 옆에 출력

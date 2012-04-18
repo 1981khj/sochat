@@ -41,18 +41,14 @@ app.configure('production', function(){
 
 app.get('/', function(req, res) {
     var db = mongo.db(mongoUrl);
-    var messageCollection = db.collection("message");
-    messageCollection.find().toArray(function(err, items) {
+    var messageCollection = db.collection("message");    
+    var now =getNowDay();
+    
+    messageCollection.find({timestamp:{$gte:now}}).toArray(function(err, items) {
         if (err) throw err;
- 
-        console.log(items);
-        //items = JSON.stringify(items);
-        //res.render('result',{title:'result', items:items});
         
         res.render('chat.jade',{items:items});
-        
-	}); 
-    
+    });
 });
 
 app.get('/mobile', function(req, res) {
@@ -67,10 +63,9 @@ app.get('/500', function(req, res) {
     res.render('500.jade', { error: "abc" });
 });
 
-app.error(function(err, req, res, next){
-    //console.log(err);
+/*app.error(function(err, req, res, next){
     res.render('500.jade', { error: err });
-});
+});*/
 
 /**socket io 처리 영역*/
 var io = require('socket.io').listen(app);
@@ -95,8 +90,7 @@ io.configure('production', function(){
     io.enable('browser client etag');          // apply etag caching logic based on version number
     io.enable('browser client gzip');          // gzip the file
     io.enable('browser client etag');
-    io.set('log level', 1);
-    io.set('close timeout', 1500);
+    io.set('log level', 1);    
     io.set('transports', [
         'websocket'
         , 'xhr-polling'
@@ -196,12 +190,13 @@ io.sockets.on('connection', function(socket) {
         if(data.to=="#all"){
             //퍼블릭 메시지는 오직 전체방에만 뛰워지기 때문에 방은 보내지 않도록 처리
             //io.sockets.emit('publicmessage', {msg: data.msg, from: socket.nickname, toroom: data.to});
-            //DbHandler.saveMessage({from: socket.nickname, msg: data.msg});
+            //DbHandler.saveMessage({from: socket.nickname, msg: data.msg});            
+            var sDateTime = convertDate();
+            var db = mongo.db(mongoUrl);
+	        var messageCollection = db.collection("message");            
             
             io.sockets.emit('publicmessage', {from: socket.nickname, msg: data.msg});
-            var db = mongo.db(mongoUrl);
-	        var messageCollection = db.collection("message");
-            messageCollection.insert({from: socket.nickname, msg: data.msg});
+            messageCollection.insert({from: socket.nickname, msg: data.msg, timestamp:sDateTime});
         }else{
             var sendToId = data.to.substring(1);
             
@@ -236,6 +231,30 @@ io.sockets.on('connection', function(socket) {
         io.sockets.emit('nicknames', aUserNames);
 	});
 });
+
+function convertDate(){
+    var date = new Date();
+    var aDay = [];
+    var aTime = [];
+    aDay.push(date.getUTCFullYear());
+    aDay.push(date.getUTCMonth()+1);
+    aDay.push(date.getUTCDate());
+    aTime.push(date.getUTCHours());
+    aTime.push(date.getUTCMinutes());
+               
+    return aDay.join('-')+" "+aTime.join(':');
+}
+
+function getNowDay(){
+    var date = new Date();
+    var aDay = [];
+    var aTime = [];
+    aDay.push(date.getUTCFullYear());
+    aDay.push(date.getUTCMonth()+1);
+    aDay.push(date.getUTCDate());    
+               
+    return aDay.join('-');
+}
 
 if (!module.parent) {
   app.listen(port);
