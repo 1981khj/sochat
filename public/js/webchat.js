@@ -50,13 +50,21 @@
         nicklist.empty();        
         
         var myNickName = $("span.nick_name").text();
-        console.log(myNickName);
-		for(var i in data) {			
+        
+		/*for(var i in data) {			
             if(data[i]==$.trim(myNickName))
                 nicklist.append("<li class='me'><a href='#'>"+ data[i] + "</li>");
             else
                 nicklist.append("<li><a href='#'>"+ data[i] + "</li>");
-		}
+		}*/
+        var nickdata = [];
+        for(var i in data){
+            if(data[i]==$.trim(myNickName))
+                nickdata.push("<li class='me'><a href='#'>"+ data[i] + "</li>");
+            else
+                nickdata.push("<li><a href='#'>"+ data[i] + "</li>");
+        }        
+        nicklist.append(nickdata.join(''));
         
         setUserCount(data.length);
         
@@ -129,6 +137,47 @@
         //console.log("socket:::nickis");
         
 	});
+    
+    //add for debuging
+    var conType = null;
+    //처음 소켓 접속을 시도 하는 중인 경우
+    socket.on('connecting', function(connectionType){        
+        status_update("Connecting connectionType: "+connectionType);
+        conType = connectionType;
+    });
+    
+    //처음 소켓 접속이 이루어진 경우
+    socket.on('connect', function(){
+        status_update("Connected");        
+        info_update();
+        console.log(socket);
+    });
+    
+    socket.on('connect_failed', function(){
+        status_update("Connect Failed ");        
+    });
+
+    //소켓 접속을 잃은 경우
+    socket.on('disconnect', function(){
+        status_update("Disconnected");
+        info_update();
+    });
+    
+    //소켓 접속을 잃은 후 재 접속 시도
+    socket.on('reconnecting', function( reconnetionDelay, reconnectionAttempts ) {
+        status_update("Reconnecting in " + reconnetionDelay + " seconds"+" / attempts: "+reconnectionAttempts);
+    });
+
+    //소켓 재접속이 성공적으로 이루 어진 경우
+    socket.on('reconnect', function(transport_type, reconnectionAttempts){
+        status_update("Reconnected"+" transport_type: "+transport_type+" / attempts: "+reconnectionAttempts);
+        info_update();
+    });
+
+    //소켓 재접속이 실패한 경우
+    socket.on('reconnect_failed', function(){
+        status_update("Reconnect Failed");
+    });
         
     // 기본 서브밋 속성을 죽이기 
     $("#joinform").submit(function(){        
@@ -248,6 +297,22 @@
         socket.emit('makePrivateRoom',$.trim($(this).text()));
     });*/
     
+    //add for debuging
+    $("#header h1").on("click",function(e){        
+        $("#debugLog").toggle();
+    });
+    
+    function status_update(txt){        
+        //$("#status").text(txt);        
+        var statusStr = '<li class="fade_out_end"><strong>'+txt+'</strong></li>';
+        $("#debugLog>ul:eq(1)").append(statusStr);
+    }
+    
+    function info_update(){
+        $("#connected").text(socket.socket.connected);
+        $("#sessionId").text(socket.socket.sessionid);
+        $("#connectionType").text(conType);        
+    }
 
     
     // 사용자의 대화명 입력 및 그에 따른 대화방 보이기를 컨트롤 한다. 
@@ -380,7 +445,6 @@
         var welRoom = $('.chat_tabs a');
         var aRoom = $.makeArray(welRoom);
         console.log("roomId==============================");
-        console.log(roomId);
         console.log(aRoom);
         
         var roomExist = false;

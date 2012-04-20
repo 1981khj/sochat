@@ -47,7 +47,7 @@ app.get('/', function(req, res) {
     messageCollection.find({timestamp:{$gte:now}}).toArray(function(err, items) {
         if (err) throw err;
         
-        res.render('chat.jade',{items:items});
+        res.render('messengerweb.jade',{items:items});
     });
 });
 
