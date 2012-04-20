@@ -149,8 +149,7 @@ io.sockets.on('connection', function(socket) {
         }
 	});
     
-    socket.on('setNickname', function(nick){
-        console.log("setNickname");
+    socket.on('setNickname', function(nick){        
         htUserList.set(socket.id, nick);            
         // socket 이름 추가
         socket.nickname = nick;
