@@ -2,10 +2,10 @@
     //var socket = io.connect('/');
     
     //for develop
-    //var socket = io.connect('http://sochat.hjkim.c9.io/');
+    var socket = io.connect('http://sochat.hjkim.c9.io/');
     
     //for deploy
-	var socket = io.connect('http://lovechat.herokuapp.com/');
+	//var socket = io.connect('http://lovechat.herokuapp.com/');
     var joined = false;
 
     // 서비스에 접속한 경우 자신의 대화명을 좌측 상단 아이콘 옆에 출력
@@ -110,7 +110,7 @@
     
     // 방을 만들도록 설정
     socket.on('makeChatRoom', function(data) {
-        console.log("socket:::makeChatRoom");
+        //console.log("socket:::makeChatRoom");
         if(!($("#contents").find("#"+data.id).length>0)){            
             makeTab(data.id, data.name);
             makeTabContainer(data.id);
@@ -149,8 +149,7 @@
     //처음 소켓 접속이 이루어진 경우
     socket.on('connect', function(){
         status_update("Connected");        
-        info_update();
-        console.log(socket);
+        info_update();        
     });
     
     socket.on('connect_failed', function(){
@@ -170,8 +169,12 @@
 
     //소켓 재접속이 성공적으로 이루 어진 경우
     socket.on('reconnect', function(transport_type, reconnectionAttempts){
-        status_update("Reconnected"+" transport_type: "+transport_type+" / attempts: "+reconnectionAttempts);
+        status_update("Reconnected"+" transport_type: "+transport_type+" / attempts: "+reconnectionAttempts);        
         info_update();
+        
+        //재 연결시 이름 설정
+        socket.emit('setNickname', $("span.nick_name").text());
+        
     });
 
     //소켓 재접속이 실패한 경우
@@ -207,7 +210,7 @@
 				alert('Message 을 입력해주세요.');
 				msgArea.focus();
 				return false;
-			} else {                
+			} else {
 				socket.emit('sendmsg', {msg:msgArea.val(), to: window.location.hash});
                 //console.log(window.location.hash);
 				msgArea.val("");                
@@ -444,8 +447,8 @@
     function checkRoomExist(roomId){
         var welRoom = $('.chat_tabs a');
         var aRoom = $.makeArray(welRoom);
-        console.log("roomId==============================");
-        console.log(aRoom);
+        //console.log("roomId==============================");
+        //console.log(aRoom);
         
         var roomExist = false;
         

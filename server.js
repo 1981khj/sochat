@@ -149,6 +149,13 @@ io.sockets.on('connection', function(socket) {
         }
 	});
     
+    socket.on('setNickname', function(nick){
+        console.log("setNickname");
+        htUserList.set(socket.id, nick);            
+        // socket 이름 추가
+        socket.nickname = nick;
+    });
+    
     /* 현재 사용하시 않음
     socket.on('makeRandomRoom', function(toName){
         var sRoomName = Chat.makeRandomName(8);
@@ -197,6 +204,8 @@ io.sockets.on('connection', function(socket) {
             
             io.sockets.emit('publicmessage', {from: socket.nickname, msg: data.msg});
             messageCollection.insert({from: socket.nickname, msg: data.msg, timestamp:sDateTime});
+            
+            console.log(htUserList.values());
         }else{
             var sendToId = data.to.substring(1);
             
